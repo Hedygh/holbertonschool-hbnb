@@ -1,0 +1,172 @@
+Tache 0:
+
+Presentation
+     |
+     v
+   Facade   (dans Business)
+     |
+     v
+Business Logic (entités)
+     |
+     v
+Persistence
+
+TÂCHE 0 — HIGH-LEVEL PACKAGE DIAGRAM
+VUE GLOBALE DE L’ARCHITECTURE
+
+La tâche 0 a pour objectif de présenter une vue d’ensemble de l’architecture de l’application HBnB, sans entrer dans les détails d’implémentation.
+Elle permet de comprendre comment l’application est organisée, comment les responsabilités sont réparties et comment les différentes parties du système communiquent entre elles.
+
+L’architecture repose sur un modèle en couches (layered architecture), dont le but est de séparer clairement les responsabilités techniques et fonctionnelles du système.
+
+ORGANISATION GÉNÉRALE EN TROIS COUCHES
+
+L’application est structurée en trois couches distinctes, chacune ayant un rôle bien défini.
+
+PRESENTATION LAYER
+
+La Presentation Layer représente le point d’entrée du système.
+
+Le terme « point d’entrée » signifie que cette couche est la première à recevoir les requêtes provenant de l’extérieur du système, qu’il s’agisse :
+
+d’utilisateurs,
+
+de clients HTTP,
+
+d’applications front-end,
+
+ou de services externes.
+
+Cette couche expose des services et des APIs.
+
+Une API (Application Programming Interface) est un ensemble de points d’accès permettant à un client de demander une action au système, par exemple :
+
+créer un utilisateur,
+
+créer un lieu,
+
+soumettre un avis,
+
+récupérer une liste de lieux.
+
+La Presentation Layer a un rôle limité et précis :
+
+recevoir les requêtes,
+
+vérifier leur format et leurs paramètres,
+
+transmettre la demande à la couche métier,
+
+retourner une réponse au client.
+
+Cette couche ne contient aucune règle métier et ne manipule pas directement les données persistées.
+Elle sert uniquement d’interface entre le monde extérieur et le cœur de l’application.
+
+BUSINESS LOGIC LAYER
+
+La Business Logic Layer constitue le cœur fonctionnel de l’application.
+
+Elle contient :
+
+les règles métier,
+
+les modèles du domaine.
+
+Les règles métier définissent le comportement fonctionnel du système, c’est-à-dire ce qui est autorisé ou non selon les besoins de l’application (par exemple : un utilisateur peut créer un lieu, un avis doit être associé à un utilisateur et à un lieu, etc.).
+
+Les modèles du domaine représentent les concepts métier principaux de l’application, tels que :
+
+User,
+
+Place,
+
+Review,
+
+Amenity.
+
+Ces modèles décrivent :
+
+l’état des objets (leurs attributs),
+
+leur comportement métier (leurs méthodes),
+
+les relations qu’ils entretiennent entre eux.
+
+RÔLE DE LA FACADE
+
+La Business Logic Layer expose une Facade.
+
+La Facade est une classe dont le rôle est de fournir une interface unique et simplifiée à la logique métier.
+Elle agit comme un intermédiaire entre la Presentation Layer et les modèles métier internes.
+
+Concrètement :
+
+la Presentation Layer n’interagit jamais directement avec les entités métier,
+
+elle appelle uniquement la Facade,
+
+la Facade coordonne les actions nécessaires au sein de la logique métier.
+
+Ce mécanisme permet :
+
+de réduire le couplage entre les couches,
+
+de protéger la logique métier,
+
+de centraliser les points d’accès aux fonctionnalités du système,
+
+de rendre l’architecture plus claire et maintenable.
+
+PERSISTENCE LAYER
+
+La Persistence Layer est responsable de la gestion des données.
+
+Son rôle est de :
+
+stocker les données de l’application,
+
+récupérer les données lorsque cela est nécessaire,
+
+fournir une abstraction du système de stockage.
+
+Cette couche interagit avec la base de données, qui représente le mécanisme de stockage persistant permettant de conserver les informations même après l’arrêt de l’application.
+
+La Persistence Layer :
+
+n’applique aucune règle métier,
+
+ne prend aucune décision fonctionnelle,
+
+se limite aux opérations de lecture et d’écriture des données.
+
+Elle est utilisée exclusivement par la Business Logic Layer.
+
+COMMUNICATION ENTRE LES COUCHES
+
+Les couches communiquent de manière unidirectionnelle.
+
+La Presentation Layer dépend de la Business Logic Layer, via la Facade.
+
+La Business Logic Layer dépend de la Persistence Layer.
+
+La Persistence Layer ne dépend d’aucune autre couche.
+
+Cette organisation garantit :
+
+une séparation claire des responsabilités,
+
+une architecture lisible et cohérente,
+
+une meilleure maintenabilité,
+
+une facilité d’évolution du système.
+
+CONCLUSION
+
+La tâche 0 vise à établir un cadre architectural clair sur lequel les tâches suivantes viendront s’appuyer.
+
+La tâche 1 détaillera la structure interne de la Business Logic Layer.
+
+La tâche 2 illustrera le comportement du système à travers des scénarios concrets.
+
+Cette vue globale permet de comprendre où chaque élément du système se situe, quel est son rôle et comment les interactions sont organisées, sans entrer dans des détails techniques inutiles à ce stade du projet.
