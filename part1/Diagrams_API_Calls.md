@@ -31,10 +31,10 @@ sequenceDiagram
         Facade-->>API: Success (User created)
         API-->>Client: 201 Created (user payload)
     end
-
+```
 
 # 2 Place Creation
-
+```mermaid
 sequenceDiagram
     actor Client
     participant API as Presentation(API/Service)
