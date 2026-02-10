@@ -5,79 +5,61 @@ sequenceDiagram
     actor Client
     participant API as Presentation(API/Service)
     participant Facade as Business(HBnB Facade)
-    participant UserModel as Business(User Model)
-    participant Store as Persistence(Storage/Repository)
-    participant DB as Persistence(Database)
+    participant Store as Persistence(Storage)
 
-    Client->>API: POST /users (first_name, last_name, email, password)
-    API->>API: Validate JSON (required fields, types)
+    Client->>API: POST /users (user_data)
+    API->>API: Validate request format (JSON, required fields)
     API->>Facade: create_user(user_data)
 
-    Facade->>Store: get_user_by_email(email)
-    Store->>DB: SELECT user WHERE email=email
-    DB-->>Store: user|null
-    Store-->>Facade: user|null
+    Facade->>Store: check_email_unique(email)
+    Store-->>Facade: unique | already_exists
 
     alt Email already exists
         Facade-->>API: Error (email already used)
         API-->>Client: 400/409 Error
     else Email available
-        Facade->>UserModel: build User (set fields + timestamps)
+        Facade->>Facade: Create User entity (id, timestamps)
         Facade->>Store: save_user(User)
-        Store->>DB: INSERT user
-        DB-->>Store: created(user_id)
-        Store-->>Facade: created(User)
-
+        Store-->>Facade: User saved
         Facade-->>API: Success (User created)
         API-->>Client: 201 Created (user payload)
     end
 ```
 
 # 2 Place Creation
+
 ```mermaid
 sequenceDiagram
     actor Client
     participant API as Presentation(API/Service)
     participant Facade as Business(HBnB Facade)
-    participant PlaceModel as Business(Place Model)
-    participant Store as Persistence(Storage/Repository)
-    participant DB as Persistence(Database)
+    participant Store as Persistence(Storage)
 
-    Client->>API: POST /places (owner_id, title, description, price, lat, long, amenities[])
-    API->>API: Validate JSON (required fields, types)
-    API->>Facade: create_place(owner_id, place_data)
+    Client->>API: POST /places (owner_id, place_data, amenities?)
+    API->>API: Validate request format (JSON, required fields)
+    API->>Facade: create_place(owner_id, place_data, amenities)
 
     Facade->>Store: get_user(owner_id)
-    Store->>DB: SELECT user WHERE id=owner_id
-    DB-->>Store: user|null
-    Store-->>Facade: user|null
+    Store-->>Facade: user | not_found
 
     alt Owner not found
         Facade-->>API: Error (owner not found)
         API-->>Client: 404 Error
     else Owner exists
         Facade->>Facade: Validate business rules (price/lat/long)
-        Facade->>PlaceModel: build Place (set owner + fields + timestamps)
 
         opt Amenities provided
-            Facade->>Store: get_amenities(amenities[])
-            Store->>DB: SELECT amenities WHERE id IN amenities[]
-            DB-->>Store: amenities list
-            Store-->>Facade: amenities list
-
-            alt Some amenities missing
-                Facade-->>API: Error (invalid amenity id)
+            Facade->>Store: validate_amenities(amenities)
+            Store-->>Facade: valid | invalid
+            alt Invalid amenities
+                Facade-->>API: Error (invalid amenity)
                 API-->>Client: 400 Error
-            else Amenities ok
-                Facade->>PlaceModel: attach amenities (many-to-many)
             end
         end
 
+        Facade->>Facade: Create Place entity (owner, id, timestamps)
         Facade->>Store: save_place(Place)
-        Store->>DB: INSERT place (+ join table place_amenity if needed)
-        DB-->>Store: created(place_id)
-        Store-->>Facade: created(Place)
-
+        Store-->>Facade: Place saved
         Facade-->>API: Success (Place created)
         API-->>Client: 201 Created (place payload)
     end
@@ -90,43 +72,32 @@ sequenceDiagram
     actor Client
     participant API as Presentation(API/Service)
     participant Facade as Business(HBnB Facade)
-    participant ReviewModel as Business(Review Model)
-    participant Store as Persistence(Storage/Repository)
-    participant DB as Persistence(Database)
+    participant Store as Persistence(Storage)
 
-    Client->>API: POST /reviews (user_id, place_id, rating, comment)
-    API->>API: Validate JSON (required fields, types)
+    Client->>API: POST /reviews (user_id, place_id, review_data)
+    API->>API: Validate request format (JSON, required fields)
     API->>Facade: create_review(user_id, place_id, review_data)
 
     Facade->>Store: get_user(user_id)
-    Store->>DB: SELECT user WHERE id=user_id
-    DB-->>Store: user|null
-    Store-->>Facade: user|null
-
+    Store-->>Facade: user | not_found
     alt User not found
         Facade-->>API: Error (user not found)
         API-->>Client: 404 Error
     else User exists
         Facade->>Store: get_place(place_id)
-        Store->>DB: SELECT place WHERE id=place_id
-        DB-->>Store: place|null
-        Store-->>Facade: place|null
-
+        Store-->>Facade: place | not_found
         alt Place not found
             Facade-->>API: Error (place not found)
             API-->>Client: 404 Error
         else Place exists
-            Facade->>Facade: Validate rating range (e.g., 1..5)
+            Facade->>Facade: Validate business rules (rating range)
             alt Invalid rating
                 Facade-->>API: Error (invalid rating)
                 API-->>Client: 400 Error
             else Valid rating
-                Facade->>ReviewModel: build Review (set user + place + fields + timestamps)
+                Facade->>Facade: Create Review entity (links, id, timestamps)
                 Facade->>Store: save_review(Review)
-                Store->>DB: INSERT review
-                DB-->>Store: created(review_id)
-                Store-->>Facade: created(Review)
-
+                Store-->>Facade: Review saved
                 Facade-->>API: Success (Review created)
                 API-->>Client: 201 Created (review payload)
             end
