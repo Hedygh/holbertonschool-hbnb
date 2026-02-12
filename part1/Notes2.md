@@ -195,8 +195,6 @@ Client → API → Facade → Persistence → retour.
 
 ---
 
-# 🎤 Comment expliquer ces diagrammes à l’oral
-
 On peut résumer ainsi :
 
 "Chaque diagramme montre comment une requête traverse les trois couches de l’architecture.  
