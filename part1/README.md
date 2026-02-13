@@ -1,6 +1,6 @@
-# HBnB Evolution – Part 1: UML Design
+# HBnB – Part 1: UML Design
 
-This section documents the architectural and conceptual design of the HBnB Evolution application.
+This section documents the architectural and conceptual design of the HBnB application.
 
 The objective of Part 1 is to establish a clear and structured technical blueprint before implementation begins.  
 All diagrams are designed to reflect system organization, domain modeling, and interaction flow across layers.
