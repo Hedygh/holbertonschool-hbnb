@@ -12,7 +12,7 @@ All diagrams are designed to reflect system organization, domain modeling, and i
 Part 1 is divided into three main tasks:
 
 ### 1. High-Level Architecture  
-📄 [High_Level_Package_Diagram.md](High_Level_Package_Diagram.md)
+📄 [high_level_package_diagram.md](./high_level_package_diagram.md)
 
 Defines the global layered architecture of the system:
 - Presentation Layer  
@@ -24,7 +24,7 @@ It also introduces the **Facade pattern**, which centralizes access to business 
 ---
 
 ### 2. Business Logic Layer – Class Diagram  
-📄 [Buisiness_Logic_Layer.md](Buisiness_Logic_Layer.md)
+📄 [Business_Logic_Layer.md](./Business_Logic_Layer.md)
 
 Describes the core domain entities:
 - User  
@@ -42,7 +42,7 @@ It models the internal structure of the system independently of technical implem
 ---
 
 ### 3. API Interaction Flow – Sequence Diagrams  
-📄 [Diagrams_API_Calls.md](Diagrams_API_Calls.md)
+📄 [Diagrams_API_Calls.md](./Diagrams_API_Calls.md)
 
 Illustrates how API requests travel through the system layers.
 
