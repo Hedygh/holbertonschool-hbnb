@@ -1,156 +1,159 @@
-# 🧾 TÂCHE 2 — Sequence Diagrams for API Calls
+# 🧾 TASK 2 — Sequence Diagrams for API Calls
 ## Explanatory Notes
 
-Ce document décrit, pour chaque API call, 1 une description concise du cas d’usage, 2 les étapes clés, et 3 le rôle de chaque couche Presentation, Business Logic, Persistence dans le traitement de la requête.
+This document describes, for each API call:  
+1) a concise use case description,  
+2) the key steps involved, and  
+3) the role of each layer (Presentation, Business Logic, Persistence) in processing the request.
 
 ---
 
 # 1️⃣ API Call — User Registration
-## 🎯 Objectif
-Permettre à un utilisateur de créer un nouveau compte dans le système.
+## 🎯 Objective
+Allow a user to create a new account in the system.
 
-## 🧩 Description brève
-Lorsqu’un client envoie une requête d’inscription, le système :
-- reçoit les informations utilisateur ;  
-- valide la forme des données ;  
-- applique les règles métier ex : email unique ;  
-- crée un objet `User` ;  
-- persiste le nouvel utilisateur ;  
-- renvoie une réponse confirmant la création.
+## 🧩 Brief Description
+When a client sends a registration request, the system:
+- receives the user information  
+- validates the request format  
+- applies business rules (e.g., unique email)  
+- creates a `User` object  
+- persists (saves) the new user  
+- returns a response confirming the creation  
 
-## ✅ Étapes clés
-1. Le client envoie une requête `POST /users` avec les informations d’inscription ex : first_name, last_name, email, password.  
-2. L’API valide la structure de la requête JSON valide, champs requis, types cohérents.  
-3. L’API appelle la `Facade` pour exécuter le cas d’usage "create user".  
-4. La `Facade` applique les règles métier :  
-   - vérifier que l’email n’est pas déjà utilisé ;  
-   - valider les champs selon les contraintes métier ;  
-   - créer l’entité `User` héritant de `BaseModel`.  
-5. La `Facade` demande à la couche Persistence d’enregistrer l’utilisateur.  
-6. La Persistence sauvegarde les données et renvoie l’objet ou un identifiant.  
-7. La `Facade` renvoie un résultat à l’API.  
-8. L’API renvoie une réponse au client succès ou erreur.
+## ✅ Key Steps
+1. The client sends a `POST /users` request with registration data (e.g., first_name, last_name, email, password).  
+2. The API validates the request structure (valid JSON, required fields, consistent types).  
+3. The API calls the `Facade` to execute the "create user" use case.  
+4. The `Facade` applies business rules:  
+   - verify that the email is not already used  
+   - validate fields according to business constraints  
+   - create the `User` entity (inheriting from `BaseModel`)  
+5. The `Facade` asks the Persistence layer to store the user.  
+6. The Persistence layer saves the data and returns the created object or identifier.  
+7. The `Facade` returns the result to the API.  
+8. The API sends a response back to the client (success or error).
 
-## 🔁 Flow des interactions et rôle des couches
-**Presentation Layer** : reçoit la requête, fait la validation de forme, appelle la `Facade`, renvoie la réponse HTTP.  
-**Business Logic Layer** : via la `Facade`, applique les règles métier ex : email unique, crée l’entité `User`, orchestre l’opération.  
-**Persistence Layer** : enregistre l’utilisateur et renvoie le résultat de sauvegarde.
+## 🔁 Interaction Flow and Layer Responsibilities
+**Presentation Layer**: receives the request, validates its format, calls the `Facade`, returns the HTTP response.  
+**Business Logic Layer**: through the `Facade`, applies business rules (e.g., unique email), creates the `User` entity, orchestrates the operation.  
+**Persistence Layer**: stores the user and returns confirmation of the save operation.
 
-## 🎯 But du sequence diagram
-Montrer que l’inscription passe par la `Facade` pas d’accès direct aux modèles ou à la persistence depuis l’API et que la logique métier est centralisée dans la Business Logic Layer.
+## 🎯 Purpose of the Sequence Diagram
+To demonstrate that registration goes through the `Facade` (no direct access to models or persistence from the API) and that business logic is centralized in the Business Logic Layer.
 
 ---
 
 # 2️⃣ API Call — Place Creation
-## 🎯 Objectif
-Permettre à un utilisateur de créer un nouveau `Place` annonce / logement, associé à un owner, et éventuellement lié à des amenities.
+## 🎯 Objective
+Allow a user to create a new `Place` (listing/property), associated with an owner and optionally linked to amenities.
 
-## 🧩 Description brève
-Lorsqu’un client crée un place, le système :
-- reçoit les informations du place ;  
-- valide les champs et les contraintes ;  
-- vérifie que l’owner existe ;  
-- associe des amenities si fournies ;  
-- persiste le place ;  
-- renvoie le place créé.
+## 🧩 Brief Description
+When a client creates a place, the system:
+- receives the place information  
+- validates fields and constraints  
+- verifies that the owner exists  
+- associates amenities if provided  
+- persists the place  
+- returns the created place  
 
-## ✅ Étapes clés
-1. Le client envoie une requête `POST /places` contenant les données title, description, price, latitude, longitude, owner_id, amenities....  
-2. L’API valide la structure JSON, types, champs requis.  
-3. L’API appelle la `Facade` pour le cas d’usage "create place".  
-4. La `Facade` applique les règles métier :  
-   - vérifier que le `User` owner existe ;  
-   - valider `price`, `latitude`, `longitude` ;  
-   - créer l’entité `Place` ;  
-   - si une liste d’amenities est fournie : vérifier qu’elles existent et les associer many-to-many.  
-5. La `Facade` demande à la Persistence de sauvegarder le place et les associations place–amenity si nécessaire.  
-6. La Persistence exécute l’écriture des données et renvoie le résultat.  
-7. La `Facade` renvoie l’objet créé à l’API.  
-8. L’API renvoie la réponse au client.
+## ✅ Key Steps
+1. The client sends a `POST /places` request containing data (title, description, price, latitude, longitude, owner_id, amenities...).  
+2. The API validates the structure (JSON format, types, required fields).  
+3. The API calls the `Facade` for the "create place" use case.  
+4. The `Facade` applies business rules:  
+   - verify that the `User` owner exists  
+   - validate `price`, `latitude`, `longitude`  
+   - create the `Place` entity  
+   - if amenities are provided: verify their existence and associate them (many-to-many)  
+5. The `Facade` requests the Persistence layer to save the place (and place–amenity associations if necessary).  
+6. The Persistence layer writes the data and returns the result.  
+7. The `Facade` returns the created object to the API.  
+8. The API returns the response to the client.
 
-## 🔁 Flow des interactions et rôle des couches
-**Presentation Layer** : réception + validation de forme + appel `Facade`.  
-**Business Logic Layer** : vérifie owner, valide les champs, crée `Place`, gère les associations avec `Amenity`.  
-**Persistence Layer** : sauvegarde `Place` et les liens many-to-many avec `Amenity`.
+## 🔁 Interaction Flow and Layer Responsibilities
+**Presentation Layer**: receives and validates the request format, calls the `Facade`.  
+**Business Logic Layer**: verifies owner existence, validates constraints, creates `Place`, manages associations with `Amenity`.  
+**Persistence Layer**: saves the `Place` and manages many-to-many relationships.
 
-## 🎯 But du sequence diagram
-Montrer que la création d’un place est une orchestration métier owner + contraintes + amenities et que toutes les interactions passent par la `Facade`.
+## 🎯 Purpose of the Sequence Diagram
+To show that place creation is a business orchestration process (owner + constraints + amenities) and that all interactions go through the `Facade`.
 
 ---
 
 # 3️⃣ API Call — Review Submission
-## 🎯 Objectif
-Permettre à un utilisateur de soumettre une `Review` note + commentaire pour un `Place`.
+## 🎯 Objective
+Allow a user to submit a `Review` (rating + comment) for a `Place`.
 
-## 🧩 Description brève
-Lorsqu’un client soumet une review, le système :
-- reçoit place_id, user_id, rating, comment ;  
-- vérifie que le user et le place existent ;  
-- valide la note ;  
-- crée l’entité `Review` ;  
-- persiste la review ;  
-- renvoie la review créée.
+## 🧩 Brief Description
+When a client submits a review, the system:
+- receives place_id, user_id, rating, comment  
+- verifies that the user and place exist  
+- validates the rating  
+- creates the `Review` entity  
+- persists the review  
+- returns the created review  
 
-## ✅ Étapes clés
-1. Le client envoie une requête `POST /reviews` avec place_id, user_id, rating, comment.  
-2. L’API valide la structure JSON, types, champs requis.  
-3. L’API appelle la `Facade` pour le cas d’usage "create review".  
-4. La `Facade` applique les règles métier :  
-   - vérifier que `User` existe ;  
-   - vérifier que `Place` existe ;  
-   - valider `rating` plage acceptée ;  
-   - créer l’entité `Review` et la lier à `User` et `Place`.  
-5. La `Facade` demande à la Persistence d’enregistrer la review.  
-6. La Persistence sauvegarde et renvoie le résultat.  
-7. La `Facade` renvoie à l’API.  
-8. L’API renvoie au client.
+## ✅ Key Steps
+1. The client sends a `POST /reviews` request with place_id, user_id, rating, and comment.  
+2. The API validates the request structure (valid JSON, types, required fields).  
+3. The API calls the `Facade` for the "create review" use case.  
+4. The `Facade` applies business rules:  
+   - verify that `User` exists  
+   - verify that `Place` exists  
+   - validate `rating` (accepted range)  
+   - create the `Review` entity and link it to `User` and `Place`  
+5. The `Facade` asks the Persistence layer to store the review.  
+6. The Persistence layer saves the review and returns confirmation.  
+7. The `Facade` returns the result to the API.  
+8. The API returns the response to the client.
 
-## 🔁 Flow des interactions et rôle des couches
-**Presentation Layer** : reçoit et valide la requête ; appelle la `Facade`.  
-**Business Logic Layer** : vérifie l’existence des entités liées et les règles de validation ; crée `Review`.  
-**Persistence Layer** : stocke la review et renvoie confirmation.
+## 🔁 Interaction Flow and Layer Responsibilities
+**Presentation Layer**: receives and validates the request; calls the `Facade`.  
+**Business Logic Layer**: verifies related entities and applies validation rules; creates the `Review`.  
+**Persistence Layer**: stores the review and returns confirmation.
 
-## 🎯 But du sequence diagram
-Montrer que `Review` dépend de `User` et `Place` et que la `Facade` orchestre les vérifications avant persistance.
+## 🎯 Purpose of the Sequence Diagram
+To demonstrate that `Review` depends on both `User` and `Place`, and that the `Facade` orchestrates all validations before persistence.
 
 ---
 
 # 4️⃣ API Call — Fetching a List of Places
-## 🎯 Objectif
-Permettre à un client de récupérer une liste de `Place` selon des critères filtres.
+## 🎯 Objective
+Allow a client to retrieve a list of `Place` objects based on specific filter criteria.
 
-## 🧩 Description brève
-Lorsqu’un client demande une liste, le système :
-- reçoit les critères ;  
-- valide les paramètres ;  
-- interroge la persistence ;  
-- renvoie une liste de places correspondant aux critères.
+## 🧩 Brief Description
+When a client requests a list, the system:
+- receives filter criteria  
+- validates the parameters  
+- queries the persistence layer  
+- returns a list of places matching the criteria  
 
-## ✅ Étapes clés
-1. Le client envoie une requête `GET /places` avec des query parameters criteria....  
-2. L’API lit et valide la structure des critères types, valeurs cohérentes, pagination si applicable.  
-3. L’API appelle la `Facade` pour le cas d’usage "list places".  
-4. La `Facade` applique la logique métier de recherche :  
-   - valider les critères ;  
-   - construire la demande de recherche ;  
-   - demander à la Persistence les places correspondant aux filtres.  
-5. La Persistence récupère les données liste de places et les renvoie.  
-6. La `Facade` renvoie la liste à l’API.  
-7. L’API renvoie la réponse au client.
+## ✅ Key Steps
+1. The client sends a `GET /places` request with query parameters (criteria...).  
+2. The API parses and validates the structure of the criteria (types, consistent values, pagination if applicable).  
+3. The API calls the `Facade` for the "list places" use case.  
+4. The `Facade` applies business logic for filtering:  
+   - validate criteria  
+   - build the search request  
+   - request matching places from the Persistence layer  
+5. The Persistence layer retrieves the data (list of places) and returns it.  
+6. The `Facade` returns the list to the API.  
+7. The API sends the response to the client.
 
-## 🔁 Flow des interactions et rôle des couches
-**Presentation Layer** : réception de la requête, parsing/validation des critères, appel `Facade`.  
-**Business Logic Layer** : validation métier des critères, orchestration de la recherche, formatage éventuel des résultats.  
-**Persistence Layer** : récupération des données selon les critères.
+## 🔁 Interaction Flow and Layer Responsibilities
+**Presentation Layer**: receives the request, parses and validates criteria, calls the `Facade`.  
+**Business Logic Layer**: validates business-level criteria, orchestrates the search, optionally formats results.  
+**Persistence Layer**: retrieves data according to the provided filters.
 
-## 🎯 But du sequence diagram
-Montrer le flux “read-only” pas de création, le passage par la `Facade`, et l’accès aux données uniquement via la Persistence.
+## 🎯 Purpose of the Sequence Diagram
+To illustrate a read-only flow (no entity creation), the mandatory use of the `Facade`, and controlled access to data exclusively through the Persistence layer.
 
 ---
 
-# ✅ Résumé : points communs aux 4 diagrams
-- Chaque requête commence dans la Presentation Layer ;  
-- La Presentation Layer appelle toujours la `Facade` ;  
-- La `Facade` applique les règles métier et orchestre les opérations ;  
-- La Persistence Layer gère uniquement la lecture/écriture des données ;  
-- La réponse remonte ensuite : Persistence → Business `Facade` → Presentation → Client.
+# ✅ Summary: Common Principles Across All Diagrams
+- Each request starts in the Presentation Layer  
+- The Presentation Layer always calls the `Facade`  
+- The `Facade` applies business rules and orchestrates operations  
+- The Persistence Layer handles only data storage and retrieval  
+- The response flows back: Persistence → Business (`Facade`) → Presentation → Client
