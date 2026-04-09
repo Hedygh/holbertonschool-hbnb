@@ -1,45 +1,71 @@
-# 🧠 Révision globale — HBnB Part 3 (SQLAlchemy, Auth, Relations)
+# 🧠 Révision complète — HBnB Part 3 (SQLAlchemy, Auth, Relations)
 
 ---
 
-# 1. Base de données
+# 1. Qu’est-ce qu’une base de données dans votre projet ?
 
-Une base de données sert à **stocker durablement les données** de l’application.
+Une base de données sert à stocker durablement les informations de l’application.
 
-Dans le projet HBnB, elle stocke :
-- users
-- places
-- reviews
-- amenities
-- relations (place ↔ amenity)
+Dans votre projet HBnB, elle stocke par exemple :
 
-## Avant (Part 2)
-- données en mémoire
-- tout disparaît au redémarrage
+- les utilisateurs
+- les places
+- les reviews
+- les amenities
+- les liens entre place et amenity
 
-## Maintenant (Part 3)
-- données stockées dans SQLite
-- persistent après redémarrage
+Avant, en mémoire, ces données disparaissaient au redémarrage.  
+Avec la base de données, elles restent enregistrées.
+
+## Dans votre projet
+
+Vous utilisez SQLite via SQLAlchemy.
+
+Donc :
+
+- l’application manipule des objets Python  
+- SQLAlchemy transforme ça en opérations SQL  
+- SQLite stocke physiquement les données dans un fichier  
 
 ---
 
-# 2. SQLite
+# 2. Qu’est-ce que SQLite ? Pourquoi l’utiliser ?
 
-SQLite est une base de données relationnelle légère.
+SQLite est un moteur de base de données relationnelle léger, simple et local.
 
-## Caractéristiques
-- fichier unique (`development.db`)
-- pas besoin de serveur
-- facile à utiliser en dev
+Il stocke les données dans un fichier unique :
 
-## Dans le projet
+development.db
+
+## Pourquoi on l’utilise ?
+
+- simple à installer  
+- pratique pour le développement  
+- suffisant pour un projet pédagogique  
+- facile à intégrer avec SQLAlchemy  
+
+## Dans votre config
+
 SQLALCHEMY_DATABASE_URI = 'sqlite:///development.db'
 
+Cela signifie :
+
+- utilisation de SQLite  
+- fichier local development.db  
+
 ---
 
-# 3. SQL
+# 3. Qu’est-ce que SQL ?
 
-SQL est le langage pour interagir avec une base.
+SQL est le langage utilisé pour manipuler une base de données relationnelle.
+
+## Ce qu’on peut faire avec SQL
+
+- créer des tables  
+- insérer des données  
+- lire des données  
+- modifier des données  
+- supprimer des données  
 
 ## Exemples
 
@@ -52,27 +78,44 @@ SELECT * FROM users;
 Insérer :
 INSERT INTO users (...) VALUES (...);
 
----
+Modifier :
+UPDATE users SET first_name = 'Alice' WHERE id = '...';
 
-# 4. Tables SQL
+Supprimer :
+DELETE FROM users WHERE id = '...';
 
-Une table = ensemble de lignes représentant une entité.
+## Pourquoi c’est important ?
 
-## Tables du projet
-- users
-- places
-- reviews
-- amenities
-- place_amenity
+Même si vous utilisez SQLAlchemy, il génère du SQL en arrière-plan.
 
 ---
 
-# 5. ORM
+# 4. Qu’est-ce qu’une table SQL ?
+
+Une table stocke des données d’un même type.
+
+- une ligne = un objet  
+- une colonne = une propriété  
+
+## Dans votre projet
+
+Tables :
+
+- users  
+- places  
+- reviews  
+- amenities  
+- place_amenity  
+
+---
+
+# 5. Qu’est-ce qu’un ORM ?
 
 ORM = Object Relational Mapping
 
 ## Définition
-Permet de manipuler la base de données avec des objets Python au lieu d’écrire du SQL.
+
+Permet de manipuler la base avec des objets Python au lieu d’écrire du SQL.
 
 ## Exemple
 
@@ -85,299 +128,293 @@ db.session.add(user)
 db.session.commit()
 
 ## Pourquoi on l’utilise
-- code plus lisible
-- moins de SQL manuel
-- meilleure gestion des relations
-- architecture propre
+
+- code plus lisible  
+- moins de SQL manuel  
+- gestion facile des relations  
+- architecture propre  
 
 ---
 
-# 6. SQLAlchemy
+# 6. Qu’est-ce que SQLAlchemy ?
 
-SQLAlchemy est l’ORM utilisé dans le projet.
+SQLAlchemy est l’ORM utilisé.
 
 ## Rôle
-- mapper classes ↔ tables
-- gérer les relations
-- exécuter les requêtes SQL
-- gérer la session
+
+- mapping Python ↔ SQL  
+- gestion des relations  
+- requêtes SQL  
+- gestion de session  
 
 ## Exemple
+
 class User(db.Model):
     id = db.Column(...)
 
 ---
 
-# 7. Mapping
+# 7. Qu’est-ce que le mapping ?
 
 Le mapping relie :
-- classe Python
-- table SQL
+
+- classe Python  
+- table SQL  
 
 ## Exemple
+
 class Place(BaseModel):
     __tablename__ = "places"
 
 ---
 
-# 8. Relations
+# 8. Qu’est-ce qu’une relation ?
 
-Les relations relient les entités entre elles.
+Une relation lie deux entités.
 
-## Dans le projet
-- User ↔ Place
-- Place ↔ Review
-- User ↔ Review
-- Place ↔ Amenity
+## Dans votre projet
+
+- User ↔ Place  
+- Place ↔ Review  
+- User ↔ Review  
+- Place ↔ Amenity  
 
 ---
 
 # 9. Types de relations
 
 ## One-to-Many
-Un user → plusieurs places
+
+1 user → plusieurs places  
 
 ## Many-to-Many
-Place ↔ Amenity via table pivot
+
+Place ↔ Amenity  
+
+via place_amenity  
 
 ---
 
 # 10. Primary Key
 
-Clé primaire = identifiant unique
+Identifiant unique d’une ligne.
 
-## Exemple
-id
+Exemple : id
 
 ---
 
 # 11. Foreign Key
 
-Clé étrangère = référence à une autre table
+Référence vers une autre table.
 
-## Exemple
+Exemple :
 place.user_id → users.id
 
 ---
 
 # 12. Backref
 
-Crée automatiquement la relation inverse
+Permet d’accéder à la relation inverse automatiquement.
 
-## Exemple
-place.owner
-user.places
+Exemple :
+
+place.owner  
+user.places  
 
 ---
 
 # 13. Secondary
 
-Utilisé pour many-to-many
+Utilisé pour many-to-many.
 
-## Exemple
+Exemple :
 secondary = place_amenity
 
 ---
 
 # 14. Lazy
 
-Définit quand charger les relations
+Définit quand charger les relations.
 
 ---
 
-# 15. Lazy Loading
+# 15. Lazy loading
 
-Les données liées sont chargées seulement quand on y accède
+Les relations sont chargées uniquement quand on y accède.
 
 ---
 
 # 16. lazy="subquery"
 
-Stratégie de chargement via une requête supplémentaire structurée
+Charge via une requête supplémentaire optimisée.
 
 ---
 
-# 17. Protected Endpoint
+# 17. Protected endpoint
 
-Endpoint protégé par JWT
+Route protégée :
 
-## Exemple
 @jwt_required()
 
 ---
 
 # 18. JWT Auth
 
-Système d’authentification avec token
+Authentification par token.
 
-## Flow
+## Fonctionnement
+
 login → token → requêtes protégées
 
 ---
 
 # 19. Stateless
 
-Le serveur ne garde pas de session
+Le serveur ne garde pas de session.
 
-Le client envoie le token à chaque requête
+Le client envoie le token à chaque requête.
 
 ---
 
 # 20. bcrypt
 
-Bibliothèque pour hasher les mots de passe
+Hash sécurisé des mots de passe.
 
 ---
 
 # 21. Hashing
 
-Transformation non réversible
-
-Utilisé pour sécuriser les mots de passe
+Transformation non réversible.
 
 ---
 
 # 22. Admin
 
-Utilisateur avec droits spéciaux
+Utilisateur avec droits spécifiques.
 
-## Champ
+Champ :
 is_admin
 
 ---
 
 # 23. RBAC
 
-Role-Based Access Control
-
-Permissions selon le rôle
+Gestion des droits par rôle.
 
 ---
 
 # 24. Ownership
 
-Une ressource appartient à un user
+Une ressource appartient à un utilisateur.
 
 ---
 
 # 25. Mémoire vs Persistance
 
-## Stocké
-- users
-- places
-- reviews
-- amenities
+## Persisté
 
-## Non stocké
-- token JWT côté client
+- users  
+- places  
+- reviews  
+- amenities  
+
+## Non persisté
+
+- token JWT  
 
 ---
 
 # 26. Persistance
 
-Les données restent après redémarrage
+Les données restent après redémarrage.
 
 ---
 
 # 27. Codes HTTP succès
 
-## 200 OK
-Requête réussie
-
-## 201 Created
-Création réussie
+200 OK  
+201 Created  
 
 ---
 
 # 28. Codes HTTP erreurs
 
-## 400 Bad Request
-Donnée invalide
-
-## 401 Unauthorized
-Non authentifié
-
-## 403 Forbidden
-Pas autorisé
-
-## 404 Not Found
-Ressource inexistante
-
-## 500 Internal Server Error
-Erreur serveur
+400 Bad Request  
+401 Unauthorized  
+403 Forbidden  
+404 Not Found  
+500 Internal Server Error  
 
 ---
 
 # 29. Différence 400 / 401 / 403
 
-400 → erreur de requête  
-401 → pas authentifié  
-403 → interdit malgré auth  
+400 → requête invalide  
+401 → non authentifié  
+403 → interdit  
 
 ---
 
-# 30. Protected Endpoint JWT
+# 30. Endpoint protégé JWT
 
-Route nécessitant un token valide
+Nécessite un token valide.
 
 ---
 
 # 31. Persistance vs Token
 
-## Persisté
-DB SQLite
-
-## Non persisté
-Token JWT
+DB → persistée  
+JWT → non persisté  
 
 ---
 
 # 32. Pourquoi SQLAlchemy
 
-- abstraction du SQL
-- gestion des relations
-- intégration Flask
+- abstraction SQL  
+- gestion relations  
+- intégration Flask  
 
 ---
 
 # 33. Pourquoi bcrypt
 
-- sécuriser les mots de passe
+Sécurité des mots de passe.
 
 ---
 
 # 34. Pourquoi JWT
 
-- auth stateless
-- adapté API REST
+Authentification stateless API.
 
 ---
 
 # 35. Many-to-Many
 
-Place ↔ Amenity via place_amenity
+Place ↔ Amenity via table pivot.
 
 ---
 
 # 36. Backref
 
-Relation inverse automatique
+Relation inverse automatique.
 
 ---
 
-# 37. Lazy Loading
+# 37. Lazy loading
 
-Chargement à la demande
+Chargement à la demande.
 
 ---
 
-# 38. Résumé final
+# 38. Résumé global
 
 ORM → abstraction SQL  
-SQLAlchemy → ORM utilisé  
+SQLAlchemy → ORM  
 SQLite → base locale  
-Relations → liens entre données  
+Relations → liens  
 JWT → auth  
 bcrypt → sécurité  
 RBAC → permissions  
 DB → persistance  
+
+---

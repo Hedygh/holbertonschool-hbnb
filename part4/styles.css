@@ -1,0 +1,258 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+}
+
+body {
+  background-color: #f4f4f4;
+  color: #333;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+header {
+  background-color: #222;
+  color: #fff;
+  padding: 15px 30px;
+}
+
+.header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  height: 50px;
+  width: auto;
+}
+
+nav {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+nav a {
+  color: #fff;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.login-button {
+  background-color: #ff6b6b;
+  color: #fff;
+  padding: 10px 16px;
+  border-radius: 6px;
+  text-decoration: none;
+}
+
+main {
+  flex: 1;
+  padding: 2rem;
+}
+
+footer {
+  background-color: #222;
+  color: #fff;
+  text-align: center;
+  padding: 1rem;
+  margin-top: auto;
+}
+
+#filter {
+  margin-bottom: 20px;
+}
+
+#price-filter {
+  padding: 8px;
+  margin-left: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+.places-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 20px;
+}
+
+.place-card,
+.review-card {
+  margin: 20px;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  background-color: #fff;
+}
+
+.place-card h2,
+.review-card h2 {
+  margin-bottom: 10px;
+}
+
+.place-card p,
+.review-card p {
+  margin-bottom: 10px;
+}
+
+.details-button {
+  display: inline-block;
+  background-color: #4d96ff;
+  color: #fff;
+  padding: 10px 14px;
+  border-radius: 6px;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+}
+
+.place-details {
+  margin: 20px;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  background-color: #fff;
+}
+
+.place-details h1 {
+  margin-bottom: 20px;
+}
+
+.place-info p {
+  margin-bottom: 12px;
+}
+
+.reviews-section {
+  margin-top: 20px;
+}
+
+.reviews-section h2 {
+  margin-left: 20px;
+  margin-bottom: 10px;
+}
+
+.add-review {
+  margin: 20px;
+}
+
+.form-page {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.form-card {
+  width: 100%;
+  max-width: 500px;
+  background-color: #fff;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+}
+
+form h2,
+.form-card h2 {
+  margin-bottom: 20px;
+}
+
+label {
+  margin: 12px 0 6px;
+}
+
+input,
+textarea,
+select {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+button {
+  margin-top: 20px;
+  padding: 12px;
+  border: none;
+  border-radius: 6px;
+  background-color: #ff6b6b;
+  color: #fff;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+button:hover,
+.details-button:hover,
+.login-button:hover {
+  opacity: 0.9;
+}
+
+@media (max-width: 768px) {
+  .header-container {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  nav {
+    flex-direction: column;
+  }
+
+  main {
+    padding: 1rem;
+  }
+
+  .place-card,
+  .review-card,
+  .place-details,
+  .add-review {
+    margin: 10px;
+  }
+}
+
+#error-message {
+  color: #d00000;
+  margin-bottom: 10px;
+  font-size: 0.95rem;
+}
+
+.amenities-block {
+  margin-top: 15px;
+}
+
+.amenities-list {
+  margin-top: 8px;
+  padding-left: 20px;
+}
+
+.amenities-list li {
+  margin-bottom: 6px;
+}
+
+.no-reviews {
+  margin: 20px;
+  font-style: italic;
+}
+
+#review-message {
+  margin-bottom: 15px;
+  font-size: 0.95rem;
+}
+
+#review-message.success {
+  color: #11823b;
+}
+
+#review-message.error {
+  color: #d00000;
+}
